@@ -1,0 +1,4 @@
+# Heterogeneous-Localisation-Swift-Hohenberg
+The file *runAndPlot.m* does what it says, and calls the file *plotSols.m* to do the plotting. The plots show the solution $u$, regions where $r>0$ (vertical red lines). Green and blue vertical lines will also be plotted if the user ets the variable 'subcritical' to the value 1 and the homogeneous analogue of the system has a subcritical Turing bifurcation within the domain.
+
+**Warning:** the number of grid points $N$ should be sufficiently large to avoid numerical issues, especially for small $\varepsilon$ or large $q_c$. To check if it is sufficiently large, comment out the plot labelled p1 in *plotSols.m* and uncomment out the line above, checking that there are many discrete points used per peak (ideally $O(20)$ or so grid points per oscillation/peak).
