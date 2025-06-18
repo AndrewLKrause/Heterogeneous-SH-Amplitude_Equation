@@ -1,4 +1,4 @@
-function [U] = RunSimulation(r, qc, f, params, Uinit)
+function [U] = RunSimulation(r, f, params, Uinit)
 
 N = params.N; eps = params.eps; dx = params.dx; T = params.T;
 
@@ -14,7 +14,7 @@ Bih = @(u)Lap(Lap(u));
 e = ones(N,1); % Vector of ones to use across the diagonals
 JP = spdiags([e e e e e], -2:2, N, N); % five-diagonal sparsity pattern
 
-F = @(t,U)r.*U-((qc.^2).*U+qc.*Lap(U)+Lap(qc.*U)+Bih(U)) +f(U);
+F = @(t,U)r.*U-(U+Lap(U)+Lap(U)+Bih(U)) +f(U);
 
 %opts = odeset('JPattern',JP);%,'reltol',1e-9,'AbsTol',1e-9);
 opts = odeset('JPattern',JP,'reltol',params.tol,'AbsTol',params.tol);

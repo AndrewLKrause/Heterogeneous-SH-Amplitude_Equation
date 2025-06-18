@@ -9,24 +9,15 @@ p1 = plot(x(pI),U(end,pI),'-','linewidth',1); hold on
 %p2 = plot(x(pI),r(pI),'.','linewidth',2);
 %plot(x,qc,'-.','linewidth',2);
 ax = gca;
-set(ax, 'fontsize', 16);
-%legend('$u$', '$r(x)$', '$q_c(x)$', 'interpreter','latex')
+set(ax, 'fontsize', 16);%legend('$u$', '$r(x)$', '$q_c(x)$', 'interpreter','latex')
 xlabel('$x$','interpreter','latex');
 
 axis tight manual;
 
-Xs = AllZeros(rf, 0, 1, N);
+%Xs = AllZeros(rf, 0, 1, N);
 
-for i=1:length(Xs)
-    line([Xs(i),Xs(i)], ax.YLim,'linestyle','--','color','r','linewidth',1);
-end
-if(subcritical)
-    for i=1:length(Xs2)
-        line([Xs2(i),Xs2(i)], ax.YLim,'linestyle','--','color','g','linewidth',1);
-    end
-    for i=1:length(Xs3)
-        line([Xs3(i),Xs3(i)], ax.YLim,'linestyle','--','color','b','linewidth',1);
-    end
-end
+%for i=1:length(Xs)
+%    line([Xs(i),Xs(i)], ax.YLim,'linestyle','--','color','r','linewidth',1);
+%end
 %legend([p1,p2],'$u$', '$r(x)$', 'interpreter','latex')
 %legend([p1], '$u$', 'interpreter','latex')

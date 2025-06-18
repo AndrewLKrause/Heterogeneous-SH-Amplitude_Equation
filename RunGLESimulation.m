@@ -1,9 +1,11 @@
-function [A] = RunGLESimulation(rp, tp, alpha, beta, params, Uinit)
+function [R] = RunGLESimulation(rp, x_0, b,c,d,e, params, Uinit)
 
 N = params.N; eps = params.eps; dx = params.dx; T = params.T;
 
 x = linspace(0,1,N)';
-gamma = alpha/eps^(1/3);
+%gamma = c/eps^(1/3);
+c_0=-38*b^2/27
+c_2 = (c-c_0)/eps^(1/3)
 
 % %Form the Laplacian
 % e = ones(N,1); % Vector of ones to use across the diagonals
@@ -16,15 +18,54 @@ D = (4*eps^(4/3))/dx^2;
 
 Lap = @(u)D*[u(2)-u(1); u(1:end-2)-2*u(2:end-1)+u(3:end);u(end-1)-u(end)];
 
-e = ones(N,1); % Vector of ones to use across the diagonals
-JP = spdiags([e e e e e], -1:1, N, N); % three-diagonal sparsity pattern
+%Adv = (1/(2*dx))*spdiags([ones(N,1),-ones(N,1)],[1,-1],N,N);
+Adv = @(u)(eps^(2/3)/(2*dx))*[-u(2); -u(1:end-2)+u(3:end);-u(end-1)];
 
-F = @(t,A)Lap(A)+(rp*(x-tp).*A)/(eps^(2/3))+(3/4)*gamma*A.^3-(10/16)*beta*A.^5;
+% Neumann boundary conditions
+% Lap(1,1) = -1; Lap(end,end) = -1;
+% Adv(1,2)=0; Adv(end,end-1)=0;
+
+e_v = ones(N,1); % Vector of ones to use across the diagonals
+JP = spdiags([e_v e_v e_v e_v e_v], -1:1, N, N); % three-diagonal sparsity pattern
+%JP = sparse([JP, JP; JP JP]);
+%RI = (1:N)'; phiI = (N+1:2*N)';
+
+%A = Uinit;
+%size(A(RI))
+%size(A(phiI))
+
+%size(Lap(A(RI)) - 4*A(RI).*(Adv(A(phiI)).^2) - (32/27)*b^2*A(RI).^3.*Adv(A(phiI)) + (rp*(x-x_0).*A(RI))/(eps^(2/3))...
+%    + 3*c_2*A(RI).^3 + (-3920*b^4/81+116*b*d/3+10*e)*A(RI).^5)
+%size(Lap(A(phiI)) + 8*Adv(A(RI)).*Adv(A(phiI))./A(RI) + (32/27)*b^2*A(RI).*Adv(A(RI)))
+%size([Lap(A(RI)) - 4*A(RI).*(Adv(A(phiI)).^2) - (32/27)*b^2*A(RI).^3.*Adv(A(phiI)) + (rp*(x-x_0).*A(RI))/(eps^(2/3))...
+%    + 3*c_2*A(RI).^3 + (-3920*b^4/81+116*b*d/3+10*e)*A(RI).^5;...
+%    Lap(A(phiI)) + 8*Adv(A(RI)).*Adv(A(phiI))./A(RI) + (32/27)*b^2*A(RI).*Adv(A(RI))])
+
+
+%F = @(t,A)Lap(A) + (rp*(x-x_0).*A)/(eps^(2/3)) + 3*c_2*A.^3 + (-3920*b^4/81+116*b*d/3+10*e)*A.^5;
+%F = @(t,A)[Lap(A(RI)) - 4*A(RI).*(Adv(A(phiI)).^2) - (32/27)*b^2*A(RI).^3.*Adv(A(phiI)) + (rp*(x-x_0).*A(RI))/(eps^(2/3))...
+%    + 3*c_2*A(RI).^3 + (-3920*b^4/81+116*b*d/3+10*e)*A(RI).^5;...
+%    (Lap(A(phiI)) + 8*Adv(A(RI)).*Adv(A(phiI))./A(RI) + (32/27)*b^2*A(RI).*Adv(A(RI)))];
+%F = @(t,A)[Lap(A) - 4*A.*(Adv(A(phiI)).^2) - (32/27)*b^2*A(RI).^3.*Adv(A(phiI)) + (rp*(x-x_0).*A(RI))/(eps^(2/3))...
+%    + 3*c_2*A(RI).^3 + (-3920*b^4/81+116*b*d/3+10*e)*A(RI).^5;
+
+F = @(t,A)Lap(A) + (rp*(x-x_0).*A)/(eps^(2/3)) + 3*c_2*A.^3 + ((32*b^2-4)/(27^2)-3920*b^4/81+116*b*d/3+10*e)*A.^5;
+
+
+%size(Lap(Uinit))
+%size(rp)
+%size(x-x_0.*Uinit)
+%size(c_2*Uinit.^3)
+%size(10*e*Uinit.^5)
+
+%F(0,Uinit)
 
 %opts = odeset('JPattern',JP);%,'reltol',1e-9,'AbsTol',1e-9);
 opts = odeset('JPattern',JP,'reltol',params.tol,'AbsTol',params.tol);
 
 [~,A] = ode15s(F, T, Uinit,opts);
 
-A = A(end,:)*eps^(1/6);
+%R = 2*A(:,RI)*eps^(1/6);
+R = 2*A*eps^(1/6);
+%phi = A(:,phiI);
 end
