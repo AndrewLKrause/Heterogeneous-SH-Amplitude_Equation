@@ -49,7 +49,7 @@ JP = spdiags([e_v e_v e_v e_v e_v], -1:1, N, N); % three-diagonal sparsity patte
 %F = @(t,A)[Lap(A) - 4*A.*(Adv(A(phiI)).^2) - (32/27)*b^2*A(RI).^3.*Adv(A(phiI)) + (rp*(x-x_0).*A(RI))/(eps^(2/3))...
 %    + 3*c_2*A(RI).^3 + (-3920*b^4/81+116*b*d/3+10*e)*A(RI).^5;
 
-F = @(t,A)Lap(A) + (rp*(x-x_0).*A)/(eps^(2/3)) + 3*c_2*A.^3 + ((32*b^2-4)/(27^2)-3920*b^4/81+116*b*d/3+10*e)*A.^5;
+F = @(t,A)Lap(A) + (rp*(x-x_0).*A)/(eps^(2/3)) + 3*c_2*A.^3 + (16*b^4/243-3920*b^4/81+116*b*d/3+10*e)*A.^5;
 
 
 %size(Lap(Uinit))

@@ -11,9 +11,11 @@ clear;rng(3);
 eps = 2e-3;
 
 
-b = -2; c = -5.6; d = 1; e = -2;
+%b = -2; c = -5.6; d = 1; e = -2;
+b = -6; c = -50; d = 70; e = -0.1;
 
 f = @(U)b*U.^2+c*U.^3+d*U.^4+e*U.^5;
+%f = @(U)0.1*(U.^2.*sin(U)+sin(U).^3+U.^3)-U.^5;
 
 %Capital F is the formal integral of little f, and is only needed if
 %subcritical=1.
@@ -60,3 +62,4 @@ plotSols;
 plot(x, R(end,:),'--k','linewidth',2)
 plot(x, -R(end,:),'--k','linewidth',2)
 
+axis tight;
